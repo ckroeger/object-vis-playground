@@ -1,5 +1,7 @@
 package com.github.service.renderer;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -69,12 +71,15 @@ public class HTMLObjectRenderer {
 
     private static void renderFields(Object obj, StringBuilder html) {
         html.append(HTML_UL_O);
+        Field[] fields2 = FieldUtils.getAllFields(obj.getClass());
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
+            //field.trySetAccessible();
             html.append(HTML_LI_O).append(field.getName()).append(": ");
             try {
-                renderObject(field.get(obj), html);
+                Object obj1 = field.get(obj);
+                renderObject(obj1, html);
             } catch (IllegalAccessException e) {
                 html.append("Error accessing field");
             }
